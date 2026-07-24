@@ -3408,24 +3408,25 @@ module.exports = function ($$$config) {
     updateEffect(subscribeToStore.bind(null, fiber, hook, subscribe), [
       subscribe
     ]);
-    if (
+    subscribe =
       hook.getSnapshot !== getSnapshot ||
       snapshotChanged ||
-      (null !== workInProgressHook && workInProgressHook.memoizedState.tag & 1)
-    ) {
+      (null !== workInProgressHook &&
+        0 !== (workInProgressHook.memoizedState.tag & 1));
+    pushSimpleEffect(
+      subscribe ? 9 : 8,
+      { destroy: void 0 },
+      updateStoreInstance.bind(
+        null,
+        fiber,
+        hook,
+        getServerSnapshot,
+        getSnapshot
+      ),
+      null
+    );
+    if (subscribe) {
       fiber.flags |= 2048;
-      pushSimpleEffect(
-        9,
-        { destroy: void 0 },
-        updateStoreInstance.bind(
-          null,
-          fiber,
-          hook,
-          getServerSnapshot,
-          getSnapshot
-        ),
-        null
-      );
       if (null === workInProgressRoot) throw Error(formatProdErrorMessage(349));
       isHydrating$jscomp$0 ||
         0 !== (renderLanes & 127) ||
@@ -8806,20 +8807,6 @@ module.exports = function ($$$config) {
         case 0:
         case 11:
         case 15:
-          if (
-            !enableEffectEventMutationPhase &&
-            0 !== (flags & 4) &&
-            ((current = fiber.updateQueue),
-            (current = null !== current ? current.events : null),
-            null !== current)
-          )
-            for (
-              isViewTransitionEligible = 0;
-              isViewTransitionEligible < current.length;
-              isViewTransitionEligible++
-            )
-              (flags = current[isViewTransitionEligible]),
-                (flags.ref.impl = flags.nextImpl);
           break;
         case 1:
           if (0 !== (flags & 1024) && null !== current) {
@@ -9683,7 +9670,6 @@ module.exports = function ($$$config) {
       case 14:
       case 15:
         if (
-          enableEffectEventMutationPhase &&
           flags & 4 &&
           ((current = finishedWork.updateQueue),
           (current = null !== current ? current.events : null),
@@ -13370,8 +13356,6 @@ module.exports = function ($$$config) {
       dynamicFeatureFlags.disableLegacyContextForFunctionComponents,
     disableSchedulerTimeoutInWorkLoop =
       dynamicFeatureFlags.disableSchedulerTimeoutInWorkLoop,
-    enableEffectEventMutationPhase =
-      dynamicFeatureFlags.enableEffectEventMutationPhase,
     enableInfiniteRenderLoopDetection =
       dynamicFeatureFlags.enableInfiniteRenderLoopDetection,
     enableInfiniteRenderLoopDetectionForceThrow =
@@ -14626,7 +14610,7 @@ module.exports = function ($$$config) {
       version: rendererVersion,
       rendererPackageName: rendererPackageName,
       currentDispatcherRef: ReactSharedInternals,
-      reconcilerVersion: "19.3.0-www-classic-c0c39a6b-20260709"
+      reconcilerVersion: "19.3.0-www-classic-28cd4bb0-20260723"
     };
     null !== extraDevToolsConfig &&
       (internals.rendererConfig = extraDevToolsConfig);
