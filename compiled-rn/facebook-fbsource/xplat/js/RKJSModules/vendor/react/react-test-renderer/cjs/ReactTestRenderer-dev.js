@@ -7,13 +7,13 @@
  * @noflow
  * @nolint
  * @preventMunge
- * @generated SignedSource<<3a91cc940fe04fb000a63a09000f630f>>
+ * @generated SignedSource<<696dc23789effbd25a56b38e0ff8a0aa>>
  */
 
 "use strict";
 __DEV__ &&
   (function () {
-    function JSCompiler_object_inline_createNodeMock_1213() {
+    function JSCompiler_object_inline_createNodeMock_1207() {
       return null;
     }
     function findHook(fiber, id) {
@@ -5014,25 +5014,19 @@ __DEV__ &&
       hook = hook.queue;
       var create = subscribeToStore.bind(null, fiber, hook, subscribe);
       updateEffectImpl(2048, Passive, create, [subscribe]);
-      if (
+      subscribe =
         hook.getSnapshot !== getSnapshot ||
         cachedSnapshot ||
         (null !== workInProgressHook &&
-          workInProgressHook.memoizedState.tag & HasEffect)
-      ) {
+          (workInProgressHook.memoizedState.tag & HasEffect) !== NoFlags);
+      pushSimpleEffect(
+        subscribe ? HasEffect | Passive : Passive,
+        { destroy: void 0 },
+        updateStoreInstance.bind(null, fiber, hook, nextSnapshot, getSnapshot),
+        null
+      );
+      if (subscribe) {
         fiber.flags |= 2048;
-        pushSimpleEffect(
-          HasEffect | Passive,
-          { destroy: void 0 },
-          updateStoreInstance.bind(
-            null,
-            fiber,
-            hook,
-            nextSnapshot,
-            getSnapshot
-          ),
-          null
-        );
         if (null === workInProgressRoot)
           throw Error(
             "Expected a work-in-progress root. This is a bug in React. Please file an issue."
@@ -10435,7 +10429,7 @@ __DEV__ &&
     function commitBeforeMutationEffects(root, firstChild, committedLanes) {
       root = (committedLanes & 335544064) === committedLanes;
       nextEffect = firstChild;
-      for (firstChild = root ? 9270 : 1028; null !== nextEffect; ) {
+      for (firstChild = root ? 9270 : 1024; null !== nextEffect; ) {
         committedLanes = nextEffect;
         if (root) {
           var deletions = committedLanes.deletions;
@@ -10488,22 +10482,6 @@ __DEV__ &&
           case 0:
           case 11:
           case 15:
-            if (
-              0 !== (flags & 4) &&
-              ((isViewTransitionEligible = finishedWork.updateQueue),
-              (isViewTransitionEligible =
-                null !== isViewTransitionEligible
-                  ? isViewTransitionEligible.events
-                  : null),
-              null !== isViewTransitionEligible)
-            )
-              for (
-                finishedWork = 0;
-                finishedWork < isViewTransitionEligible.length;
-                finishedWork++
-              )
-                (current = isViewTransitionEligible[finishedWork]),
-                  (current.ref.impl = current.nextImpl);
             break;
           case 1:
             0 !== (flags & 1024) &&
@@ -11152,6 +11130,16 @@ __DEV__ &&
         case 11:
         case 14:
         case 15:
+          if (
+            flags & 4 &&
+            ((current = finishedWork.updateQueue),
+            (current = null !== current ? current.events : null),
+            null !== current)
+          )
+            for (var ii = 0; ii < current.length; ii++) {
+              var _eventPayloads$ii2 = current[ii];
+              _eventPayloads$ii2.ref.impl = _eventPayloads$ii2.nextImpl;
+            }
           recursivelyTraverseMutationEffects(root, finishedWork, lanes);
           commitReconciliationEffects(finishedWork);
           flags & 4 &&
@@ -11187,10 +11175,10 @@ __DEV__ &&
         case 26:
         case 27:
         case 5:
-          var prevOffscreenDirectParentIsHidden = offscreenDirectParentIsHidden;
+          ii = offscreenDirectParentIsHidden;
           offscreenDirectParentIsHidden = !1;
           recursivelyTraverseMutationEffects(root, finishedWork, lanes);
-          offscreenDirectParentIsHidden = prevOffscreenDirectParentIsHidden;
+          offscreenDirectParentIsHidden = ii;
           commitReconciliationEffects(finishedWork);
           flags & 512 &&
             (offscreenSubtreeWasHidden ||
@@ -11238,12 +11226,12 @@ __DEV__ &&
               );
             root = finishedWork.memoizedProps;
             lanes = null !== current ? current.memoizedProps : root;
-            current = finishedWork.stateNode;
+            flags = finishedWork.stateNode;
             try {
               runWithFiberInDEV(
                 finishedWork,
                 commitTextUpdate,
-                current,
+                flags,
                 lanes,
                 root
               ),
@@ -11254,11 +11242,11 @@ __DEV__ &&
           }
           break;
         case 3:
-          current = pushNestedEffectDurations();
+          flags = pushNestedEffectDurations();
           viewTransitionMutationContext = rootMutationContext = !1;
           recursivelyTraverseMutationEffects(root, finishedWork, lanes);
           commitReconciliationEffects(finishedWork);
-          root.effectDuration += popNestedEffectDurations(current);
+          root.effectDuration += popNestedEffectDurations(flags);
           viewTransitionMutationContext && (rootMutationContext = !0);
           viewTransitionMutationContext = !1;
           rootMutationContext &&
@@ -11267,21 +11255,21 @@ __DEV__ &&
             (needsIsomorphicIndicator = !1));
           break;
         case 4:
-          current = offscreenDirectParentIsHidden;
+          flags = offscreenDirectParentIsHidden;
           offscreenDirectParentIsHidden = offscreenSubtreeIsHidden;
-          flags = pushMutationContext();
+          current = pushMutationContext();
           recursivelyTraverseMutationEffects(root, finishedWork, lanes);
           commitReconciliationEffects(finishedWork);
           viewTransitionMutationContext && (rootMutationContext = !0);
-          viewTransitionMutationContext = flags;
-          offscreenDirectParentIsHidden = current;
+          viewTransitionMutationContext = current;
+          offscreenDirectParentIsHidden = flags;
           break;
         case 12:
-          current = pushNestedEffectDurations();
+          flags = pushNestedEffectDurations();
           recursivelyTraverseMutationEffects(root, finishedWork, lanes);
           commitReconciliationEffects(finishedWork);
           finishedWork.stateNode.effectDuration +=
-            bubbleNestedEffectDurations(current);
+            bubbleNestedEffectDurations(flags);
           break;
         case 31:
           recursivelyTraverseMutationEffects(root, finishedWork, lanes);
@@ -11307,21 +11295,19 @@ __DEV__ &&
               attachSuspenseRetryListeners(finishedWork, root)));
           break;
         case 22:
-          prevOffscreenDirectParentIsHidden =
-            null !== finishedWork.memoizedState;
-          var wasHidden = null !== current && null !== current.memoizedState;
+          ii = null !== finishedWork.memoizedState;
+          _eventPayloads$ii2 =
+            null !== current && null !== current.memoizedState;
           if (finishedWork.mode & 1) {
             var prevOffscreenSubtreeIsHidden = offscreenSubtreeIsHidden,
               prevOffscreenSubtreeWasHidden = offscreenSubtreeWasHidden,
               _prevOffscreenDirectParentIsHidden2 =
                 offscreenDirectParentIsHidden;
-            offscreenSubtreeIsHidden =
-              prevOffscreenSubtreeIsHidden || prevOffscreenDirectParentIsHidden;
+            offscreenSubtreeIsHidden = prevOffscreenSubtreeIsHidden || ii;
             offscreenDirectParentIsHidden =
-              _prevOffscreenDirectParentIsHidden2 ||
-              prevOffscreenDirectParentIsHidden;
+              _prevOffscreenDirectParentIsHidden2 || ii;
             offscreenSubtreeWasHidden =
-              prevOffscreenSubtreeWasHidden || wasHidden;
+              prevOffscreenSubtreeWasHidden || _eventPayloads$ii2;
             recursivelyTraverseMutationEffects(root, finishedWork, lanes);
             offscreenSubtreeWasHidden = prevOffscreenSubtreeWasHidden;
             offscreenDirectParentIsHidden = _prevOffscreenDirectParentIsHidden2;
@@ -11330,22 +11316,18 @@ __DEV__ &&
           commitReconciliationEffects(finishedWork);
           flags & 8192 &&
             ((root = finishedWork.stateNode),
-            (root._visibility = prevOffscreenDirectParentIsHidden
+            (root._visibility = ii
               ? root._visibility & ~OffscreenVisible
               : root._visibility | OffscreenVisible),
-            prevOffscreenDirectParentIsHidden &&
+            ii &&
               (null === current ||
-                wasHidden ||
+                _eventPayloads$ii2 ||
                 offscreenSubtreeIsHidden ||
                 offscreenSubtreeWasHidden ||
                 (0 !== (finishedWork.mode & 1) &&
                   recursivelyTraverseDisappearLayoutEffects(finishedWork))),
-            (!prevOffscreenDirectParentIsHidden &&
-              offscreenDirectParentIsHidden) ||
-              hideOrUnhideAllChildren(
-                finishedWork,
-                prevOffscreenDirectParentIsHidden
-              ));
+            (!ii && offscreenDirectParentIsHidden) ||
+              hideOrUnhideAllChildren(finishedWork, ii));
           flags & 4 &&
             ((root = finishedWork.updateQueue),
             null !== root &&
@@ -11369,14 +11351,17 @@ __DEV__ &&
               null === current ||
               safelyDetachRef(current, current.return));
           flags = pushMutationContext();
-          prevOffscreenDirectParentIsHidden = (lanes & 335544064) === lanes;
-          wasHidden = finishedWork.memoizedProps;
-          prevOffscreenDirectParentIsHidden &&
+          ii = (lanes & 335544064) === lanes;
+          _eventPayloads$ii2 = finishedWork.memoizedProps;
+          ii &&
             "none" !==
-              getViewTransitionClassName(wasHidden.default, wasHidden.update);
+              getViewTransitionClassName(
+                _eventPayloads$ii2.default,
+                _eventPayloads$ii2.update
+              );
           recursivelyTraverseMutationEffects(root, finishedWork, lanes);
           commitReconciliationEffects(finishedWork);
-          prevOffscreenDirectParentIsHidden &&
+          ii &&
             null !== current &&
             viewTransitionMutationContext &&
             (finishedWork.flags |= 4);
@@ -17039,10 +17024,10 @@ __DEV__ &&
     (function () {
       var internals = {
         bundleType: 1,
-        version: "19.3.0-native-fb-b740af25-20260715",
+        version: "19.3.0-native-fb-28cd4bb0-20260723",
         rendererPackageName: "react-test-renderer",
         currentDispatcherRef: ReactSharedInternals,
-        reconcilerVersion: "19.3.0-native-fb-b740af25-20260715"
+        reconcilerVersion: "19.3.0-native-fb-28cd4bb0-20260723"
       };
       internals.overrideHookState = overrideHookState;
       internals.overrideHookStateDeletePath = overrideHookStateDeletePath;
@@ -17065,7 +17050,7 @@ __DEV__ &&
     exports._Scheduler = Scheduler;
     exports.act = act;
     exports.create = function (element, options) {
-      var createNodeMock = JSCompiler_object_inline_createNodeMock_1213,
+      var createNodeMock = JSCompiler_object_inline_createNodeMock_1207,
         isConcurrent = !1,
         isStrictMode = !1;
       "object" === typeof options &&
@@ -17188,5 +17173,5 @@ __DEV__ &&
             flushSyncWorkAcrossRoots_impl(0, !0));
       }
     };
-    exports.version = "19.3.0-native-fb-b740af25-20260715";
+    exports.version = "19.3.0-native-fb-28cd4bb0-20260723";
   })();

@@ -7,7 +7,7 @@
  * @noflow
  * @nolint
  * @preventMunge
- * @generated SignedSource<<18f39656ee78d2ef20f4560203c34821>>
+ * @generated SignedSource<<531523f0d6f61780fc6e8cff530108a3>>
  */
 
 "use strict";
@@ -1855,7 +1855,7 @@ __DEV__ &&
       }
       return null;
     }
-    function traverseVisibleHostChildren(
+    function traverseVisibleInstancesAndTextInstances(
       child,
       searchWithinHosts,
       fn,
@@ -1870,7 +1870,7 @@ __DEV__ &&
             fn(child, a, b, c)) ||
           ((22 !== child.tag || null === child.memoizedState) &&
             (searchWithinHosts || 5 !== child.tag) &&
-            traverseVisibleHostChildren(
+            traverseVisibleInstancesAndTextInstances(
               child.child,
               searchWithinHosts,
               fn,
@@ -1884,7 +1884,7 @@ __DEV__ &&
       }
       return !1;
     }
-    function getFragmentParentHostFiber(fiber) {
+    function getFragmentParentInstanceOrContainerFiber(fiber) {
       for (fiber = fiber.return; null !== fiber; ) {
         if (3 === fiber.tag || 5 === fiber.tag) return fiber;
         fiber = fiber.return;
@@ -6595,25 +6595,19 @@ __DEV__ &&
       hook = hook.queue;
       var create = subscribeToStore.bind(null, fiber, hook, subscribe);
       updateEffectImpl(2048, Passive, create, [subscribe]);
-      if (
+      subscribe =
         hook.getSnapshot !== getSnapshot ||
         cachedSnapshot ||
         (null !== workInProgressHook &&
-          workInProgressHook.memoizedState.tag & HasEffect)
-      ) {
+          (workInProgressHook.memoizedState.tag & HasEffect) !== NoFlags);
+      pushSimpleEffect(
+        subscribe ? HasEffect | Passive : Passive,
+        { destroy: void 0 },
+        updateStoreInstance.bind(null, fiber, hook, nextSnapshot, getSnapshot),
+        null
+      );
+      if (subscribe) {
         fiber.flags |= 2048;
-        pushSimpleEffect(
-          HasEffect | Passive,
-          { destroy: void 0 },
-          updateStoreInstance.bind(
-            null,
-            fiber,
-            hook,
-            nextSnapshot,
-            getSnapshot
-          ),
-          null
-        );
         if (null === workInProgressRoot)
           throw Error(
             "Expected a work-in-progress root. This is a bug in React. Please file an issue."
@@ -11613,7 +11607,7 @@ __DEV__ &&
               null === finishedWork.stateNode &&
                 ((instanceToUse = new FragmentInstance(finishedWork)),
                 enableFragmentRefsInstanceHandles &&
-                  traverseVisibleHostChildren(
+                  traverseVisibleInstancesAndTextInstances(
                     finishedWork.child,
                     !1,
                     addFragmentHandleToFiber,
@@ -12308,11 +12302,7 @@ __DEV__ &&
     function commitBeforeMutationEffects(root, firstChild, committedLanes) {
       root = (committedLanes & 335544064) === committedLanes;
       nextEffect = firstChild;
-      for (
-        firstChild = root ? 9270 : BeforeMutationMask;
-        null !== nextEffect;
-
-      ) {
+      for (firstChild = root ? 9270 : 1024; null !== nextEffect; ) {
         committedLanes = nextEffect;
         if (root) {
           var deletions = committedLanes.deletions;
@@ -12365,23 +12355,6 @@ __DEV__ &&
           case 0:
           case 11:
           case 15:
-            if (
-              !enableEffectEventMutationPhase &&
-              0 !== (flags & 4) &&
-              ((isViewTransitionEligible = finishedWork.updateQueue),
-              (isViewTransitionEligible =
-                null !== isViewTransitionEligible
-                  ? isViewTransitionEligible.events
-                  : null),
-              null !== isViewTransitionEligible)
-            )
-              for (
-                finishedWork = 0;
-                finishedWork < isViewTransitionEligible.length;
-                finishedWork++
-              )
-                (current = isViewTransitionEligible[finishedWork]),
-                  (current.ref.impl = current.nextImpl);
             break;
           case 1:
             0 !== (flags & 1024) &&
@@ -12984,7 +12957,6 @@ __DEV__ &&
         case 14:
         case 15:
           if (
-            enableEffectEventMutationPhase &&
             flags & 4 &&
             ((current = finishedWork.updateQueue),
             (current = null !== current ? current.events : null),
@@ -16320,12 +16292,8 @@ __DEV__ &&
           workInProgressUpdateTask
         );
       shouldStartViewTransition = !1;
-      suspendedCommitReason =
-        0 !== (finishedWork.flags & (BeforeMutationMask | 13878));
-      if (
-        0 !== (finishedWork.subtreeFlags & (BeforeMutationMask | 13878)) ||
-        suspendedCommitReason
-      ) {
+      suspendedCommitReason = 0 !== (finishedWork.flags & 13878);
+      if (0 !== (finishedWork.subtreeFlags & 13878) || suspendedCommitReason) {
         suspendedCommitReason = ReactSharedInternals.T;
         ReactSharedInternals.T = null;
         completedRenderEndTime = currentUpdatePriority;
@@ -18234,8 +18202,6 @@ __DEV__ &&
       ReactSharedInternals =
         React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE,
       alwaysThrottleRetries = dynamicFlagsUntyped.alwaysThrottleRetries,
-      enableEffectEventMutationPhase =
-        dynamicFlagsUntyped.enableEffectEventMutationPhase,
       enableObjectFiber = dynamicFlagsUntyped.enableObjectFiber,
       passChildrenWhenCloningPersistedNodes =
         dynamicFlagsUntyped.passChildrenWhenCloningPersistedNodes,
@@ -18919,7 +18885,6 @@ __DEV__ &&
     var isInsideEventHandler = !1,
       eventQueue = null,
       _enableNativeEventTargetEventDispatching = null,
-      BeforeMutationMask = 1024 | (enableEffectEventMutationPhase ? 0 : 4),
       scheduleCallback$3 = Scheduler.unstable_scheduleCallback,
       cancelCallback$1 = Scheduler.unstable_cancelCallback,
       shouldYield = Scheduler.unstable_shouldYield,
@@ -21087,7 +21052,7 @@ __DEV__ &&
     FragmentInstance.prototype.observeUsing = function (observer) {
       null === this._observers && (this._observers = new Set());
       this._observers.add(observer);
-      traverseVisibleHostChildren(
+      traverseVisibleInstancesAndTextInstances(
         this._fragmentFiber.child,
         !1,
         observeChild,
@@ -21100,7 +21065,7 @@ __DEV__ &&
       var observers = this._observers;
       null !== observers && observers.has(observer)
         ? (observers.delete(observer),
-          traverseVisibleHostChildren(
+          traverseVisibleInstancesAndTextInstances(
             this._fragmentFiber.child,
             !1,
             unobserveChild,
@@ -21113,10 +21078,12 @@ __DEV__ &&
           );
     };
     FragmentInstance.prototype.compareDocumentPosition = function (otherNode) {
-      var parentHostFiber = getFragmentParentHostFiber(this._fragmentFiber);
+      var parentHostFiber = getFragmentParentInstanceOrContainerFiber(
+        this._fragmentFiber
+      );
       if (null === parentHostFiber) return Node.DOCUMENT_POSITION_DISCONNECTED;
       var children = [];
-      traverseVisibleHostChildren(
+      traverseVisibleInstancesAndTextInstances(
         this._fragmentFiber.child,
         !1,
         collectChildren,
@@ -21133,7 +21100,7 @@ __DEV__ &&
         children === otherNode
           ? (result = Node.DOCUMENT_POSITION_CONTAINS)
           : parentResult & Node.DOCUMENT_POSITION_CONTAINED_BY &&
-            (traverseVisibleHostChildren(
+            (traverseVisibleInstancesAndTextInstances(
               fragmentFiber.sibling,
               !1,
               findNextSibling
@@ -21169,7 +21136,9 @@ __DEV__ &&
         : fragmentFiber;
     };
     FragmentInstance.prototype.getRootNode = function (getRootNodeOptions) {
-      var parentHostFiber = getFragmentParentHostFiber(this._fragmentFiber);
+      var parentHostFiber = getFragmentParentInstanceOrContainerFiber(
+        this._fragmentFiber
+      );
       return null === parentHostFiber
         ? this
         : getPublicInstanceFromHostFiber(parentHostFiber).getRootNode(
@@ -21178,7 +21147,7 @@ __DEV__ &&
     };
     FragmentInstance.prototype.getClientRects = function () {
       var rects = [];
-      traverseVisibleHostChildren(
+      traverseVisibleInstancesAndTextInstances(
         this._fragmentFiber.child,
         !1,
         collectClientRects,
@@ -21270,10 +21239,10 @@ __DEV__ &&
     (function () {
       var internals = {
         bundleType: 1,
-        version: "19.3.0-native-fb-b740af25-20260715",
+        version: "19.3.0-native-fb-28cd4bb0-20260723",
         rendererPackageName: "react-native-renderer",
         currentDispatcherRef: ReactSharedInternals,
-        reconcilerVersion: "19.3.0-native-fb-b740af25-20260715"
+        reconcilerVersion: "19.3.0-native-fb-28cd4bb0-20260723"
       };
       null !== extraDevToolsConfig &&
         (internals.rendererConfig = extraDevToolsConfig);
