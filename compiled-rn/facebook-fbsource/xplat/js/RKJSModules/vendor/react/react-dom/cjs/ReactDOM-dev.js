@@ -7,7 +7,7 @@
  * @noflow
  * @nolint
  * @preventMunge
- * @generated SignedSource<<f371f075ed258120e161e32f9cfb6883>>
+ * @generated SignedSource<<74c16774688552983e499d0ce3bea513>>
  */
 
 "use strict";
@@ -105,6 +105,7 @@ __DEV__ &&
         findDOMNode: null
       },
       REACT_PORTAL_TYPE = Symbol.for("react.portal"),
+      REACT_RECOVERABLE_TYPE = Symbol.for("react.recoverable"),
       REACT_OPTIMISTIC_KEY = Symbol.for("react.optimistic_key"),
       ReactSharedInternals =
         React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
@@ -120,6 +121,9 @@ __DEV__ &&
       );
     exports.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE =
       Internals;
+    exports.browser = function (reason) {
+      return { $$typeof: REACT_RECOVERABLE_TYPE, _reason: reason };
+    };
     exports.createPortal = function (children, container) {
       var key =
         2 < arguments.length && void 0 !== arguments[2] ? arguments[2] : null;
@@ -419,5 +423,5 @@ __DEV__ &&
     exports.useFormStatus = function () {
       return resolveDispatcher().useHostTransitionStatus();
     };
-    exports.version = "19.3.0-native-fb-28cd4bb0-20260723";
+    exports.version = "19.3.0-native-fb-278794d7-20261002";
   })();
